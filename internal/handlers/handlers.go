@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"myapp/internal/config"
+	"myapp/internal/forms"
 	"myapp/internal/models"
 	"myapp/internal/render"
 	"net/http"
@@ -55,7 +56,47 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 
 // Reservation renders the make a reservation page and displays form
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "make-reservation.page.gohtml", &models.TemplateData{})
+	var emptyReservation models.Reservation
+	data := make(map[string]interface{})
+	data["reservation"] = emptyReservation
+
+	render.RenderTemplate(w, r, "make-reservation.page.gohtml", &models.TemplateData{
+		Form: forms.New(nil),
+		Data: data,
+	})
+}
+
+// PostReservation handles the posting of a reservation form
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("first_name"),
+		LastName:  r.Form.Get("last_name"),
+		Phone:     r.Form.Get("phone"),
+		Email:     r.Form.Get("email"),
+	}
+
+	form := forms.New(r.PostForm)
+
+	form.Required("first_name", "last_name", "email")
+	form.MinLength("first_name", 3, r)
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+
+		render.RenderTemplate(w, r, "make-reservation.page.gohtml", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
 }
 
 // Paradise renders the room page
@@ -88,7 +129,7 @@ type jsonResponse struct {
 // AvailabilityJSON handles request for availability and sends JSON response
 func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	resp := jsonResponse{
-		OK: true,
+		OK:      true,
 		Message: "Available!",
 	}
 
@@ -96,7 +137,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
 }
