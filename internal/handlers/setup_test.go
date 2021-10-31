@@ -7,14 +7,15 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/justinas/nosurf"
+	"html/template"
 	"log"
 	"myapp/internal/config"
 	"myapp/internal/models"
 	"myapp/internal/render"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
-	"html/template"
 )
 
 var app config.AppConfig
@@ -27,6 +28,12 @@ func getRoutes() http.Handler {
 
 	// change this to true when in production
 	app.InProduction = false
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
