@@ -2,3 +2,4 @@
 *.exe
 database.yml
 internal/config/secrets.go
+/sqlScripts
