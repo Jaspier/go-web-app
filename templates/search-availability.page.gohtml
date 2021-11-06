@@ -11,7 +11,7 @@
                     <input hidden type="text" name="csrf_token" value="{{.CSRFToken}}">
                     <div class="form-row">
                         <div class="col">
-                            <div class="form-row" id="reservaton-dates">
+                            <div class="form-row" id="reservation-dates">
                                 <div class="col">
                                     <input required class="form-control" type="text" name="start"
                                            placeholder="Arrival"/>
@@ -35,9 +35,10 @@
 
 {{define "js"}}
     <script>
-        const elem = document.getElementById('reservaton-dates');
-        const rangepicker = new DateRangePicker(elem, {
+        const elem = document.getElementById('reservation-dates');
+        const rangePicker = new DateRangePicker(elem, {
             format: 'yyyy-mm-dd',
+            minDate: new Date(),
         });
     </script>
 {{end}}
