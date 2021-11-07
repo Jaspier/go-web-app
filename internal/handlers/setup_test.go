@@ -75,7 +75,6 @@ func getRoutes() http.Handler {
 	mux.Post("/search-availability", Repo.PostAvailability)
 	mux.Post("/search-availability-json", Repo.AvailabilityJSON)
 
-
 	mux.Get("/contact", Repo.Contact)
 
 	mux.Get("/make-reservation", Repo.Reservation)
@@ -84,6 +83,7 @@ func getRoutes() http.Handler {
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
+
 	return mux
 }
 
@@ -93,8 +93,8 @@ func NoSurf(next http.Handler) http.Handler {
 
 	csrfHandler.SetBaseCookie(http.Cookie{
 		HttpOnly: true,
-		Path: "/",
-		Secure: app.InProduction,
+		Path:     "/",
+		Secure:   app.InProduction,
 		SameSite: http.SameSiteLaxMode,
 	})
 	return csrfHandler
@@ -107,6 +107,7 @@ func SessionLoad(next http.Handler) http.Handler {
 
 // CreateTestTemplateCache creates a template cache as a map
 func CreateTestTemplateCache() (map[string]*template.Template, error) {
+
 	myCache := map[string]*template.Template{}
 
 	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.gohtml", pathToTemplates))
@@ -132,7 +133,9 @@ func CreateTestTemplateCache() (map[string]*template.Template, error) {
 				return myCache, err
 			}
 		}
+
 		myCache[name] = ts
 	}
+
 	return myCache, nil
 }

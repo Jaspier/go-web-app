@@ -33,7 +33,7 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 }
 
 // Template renders a template
-func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
+func Template(w http.ResponseWriter, r *http.Request, gohtml string, td *models.TemplateData) error {
 	var tc map[string]*template.Template
 	if app.UseCache {
 		// get the template cache from the app config
@@ -42,7 +42,7 @@ func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.Te
 		tc, _ = CreateTemplateCache()
 	}
 
-	t, ok := tc[tmpl]
+	t, ok := tc[gohtml]
 	if !ok {
 		//log.Fatal("Could not get template from template cache")
 		return errors.New("can't get template from cache")
