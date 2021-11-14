@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-chi/chi/v5"
 	"github.com/pkg/errors"
 	"log"
 	"myapp/internal/config"
@@ -590,3 +591,13 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	render.Template(w, r, "admin-reservations-calendar.page.gohtml", &models.TemplateData{})
 }
 
+// AdminProcessReservation marks a reservation as processed
+func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	src := chi.URLParam(r, "src")
+
+	_ = m.DB.UpdateProcessedForReservation(id, 1) // 1 = processed
+
+	m.App.Session.Put(r.Context(), "flash", "Reservation marked as processed")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+}

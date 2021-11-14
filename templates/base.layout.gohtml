@@ -137,7 +137,7 @@
             notie.alert({
                 type: msgType,
                 text: msg,
-            });
+            })
         }
 
         function notifyModal(title, text, icon, confirmationButtonText) {
@@ -145,8 +145,8 @@
                 title: title,
                 html: text,
                 icon: icon,
-                confirmButtonText: confirmationButtonText,
-            });
+                confirmButtonText: confirmationButtonText
+            })
         }
 
         {{with .Error}}
@@ -154,7 +154,7 @@
         {{end}}
 
         {{with .Flash}}
-        notify("{{.}}", "flash")
+        notify("{{.}}", "success")
         {{end}}
 
         {{with .Warning}}
