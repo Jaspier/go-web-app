@@ -49,6 +49,11 @@
                         <tr>
                             {{range $index := iterate $dim}}
                                 <td class="text-center">
+                                    {{if gt (index $reservations (printf "%s-%s-%d" $currYear $currMonth (add $index 1))) 0}}
+                                            <a href="/admin/reservations/cal/{{index $reservations (printf "%s-%s-%d" $currYear $currMonth (add $index 1))}}">
+                                                <span class="text-danger">R</span>
+                                            </a>
+                                        {{else}}
                                     <input
                                         {{if gt (index $blocks (printf "%s-%s-%d" $currYear $currMonth (add $index 1))) 0 }}
                                             checked
@@ -59,6 +64,7 @@
                                             value="1"
                                         {{end}}
                                         type="checkbox">
+                                    {{end}}
                                 </td>
                             {{end}}
                         </tr>
